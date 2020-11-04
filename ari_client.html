@@ -1,17 +1,17 @@
 <script type="text/javascript">
     RED.nodes.registerType('ari_client',{
-        category: 'asterisk',      
+        category: 'asterisk',
         color: '#989898',
         icon: 'font-awesome/fa-asterisk',
-        defaults: {             
+        defaults: {
             name: {value:""},
             server: {value:"", type:"asterisk_ari"},
             sip_user: {value:""},
             sip_password: {value:""}
         },
         outputs: 2,
-        outputLabels: ["call", "dtmf"],        
-        label: function() {     
+        outputLabels: ["call", "dtmf"],
+        label: function() {
             return this.name||"Endpoint";
         },
         palletteLabel: "Endpoint"
@@ -36,8 +36,8 @@
         <input type="text" id="node-input-sip_password" placeholder="xxx">
     </div>
  </script>
- 
- 
+
+
  <!-- Next, some simple help text is provided for the node.                   -->
  <script type="text/html" data-help-name="ari_client">
     <!-- data-help-name identifies the node type this help is for             -->
@@ -52,16 +52,16 @@
 
  <script type="text/javascript">
     RED.nodes.registerType('ari_playback',{
-        category: 'asterisk',      
+        category: 'asterisk',
         color: '#FF9966',
         icon: 'font-awesome/fa-asterisk',
-        defaults: {             
+        defaults: {
             name: {value:""},
             media: {value:""}
         },
         inputs:1,
-        outputs:1,              
-        label: function() {     
+        outputs:1,
+        label: function() {
             return this.name||"ARI Playback";
         },
         palletteLabel: "ARI Playback"
@@ -78,8 +78,8 @@
         <input type="text" id="node-input-media" placeholder="sound:weasels-eaten-phonesys">
     </div>
  </script>
- 
- 
+
+
  <!-- Next, some simple help text is provided for the node.                   -->
  <script type="text/html" data-help-name="ari_playback">
     <!-- data-help-name identifies the node type this help is for             -->
@@ -96,14 +96,14 @@
 
  <script type="text/javascript">
     RED.nodes.registerType('ari_hangup',{
-        category: 'asterisk',      
+        category: 'asterisk',
         color: '#FF6633',
         icon: 'font-awesome/fa-asterisk',
-        defaults: {             
+        defaults: {
             name: {value:""}
         },
         inputs:1,
-        label: function() {     
+        label: function() {
             return this.name||"ARI Hangup";
         },
         palletteLabel: "ARI Playback"
@@ -117,8 +117,8 @@
      </div>
 
  </script>
- 
- 
+
+
  <!-- Next, some simple help text is provided for the node.                   -->
  <script type="text/html" data-help-name="ari_hangup">
     <p> Hangup The Channel</p>
@@ -126,15 +126,15 @@
 
  <script type="text/javascript">
     RED.nodes.registerType('ari_answer',{
-        category: 'asterisk',      
+        category: 'asterisk',
         color: '#66ff66',
         icon: 'font-awesome/fa-asterisk',
-        defaults: {             
+        defaults: {
             name: {value:""}
         },
         inputs:1,
         outputs: 1,
-        label: function() {     
+        label: function() {
             return this.name||"Answer";
         },
         palletteLabel: "Answer"
@@ -151,10 +151,10 @@
 
  <script type="text/javascript">
     RED.nodes.registerType('ari_bridgedial',{
-        category: 'asterisk',      
+        category: 'asterisk',
         color: '#339933',
         icon: 'font-awesome/fa-asterisk',
-        defaults: {             
+        defaults: {
             name: {value:""},
             destination: {value:""},
             callerId: {},
@@ -165,8 +165,8 @@
         },
         inputs:1,
         outputs: 2,
-        outputLabels: ["a party", "b party"], 
-        label: function() {     
+        outputLabels: ["a party", "b party"],
+        label: function() {
             return this.name||"Bridge Dial";
         },
         palletteLabel: "Bridge Dial"

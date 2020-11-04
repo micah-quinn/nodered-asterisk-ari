@@ -1,16 +1,15 @@
 var ari = require('ari-client');
 var uuid = require('uuid')
+var prov = require('./provision.js')
 
 module.exports = function(RED) {
     "use strict";
-    
-
 
     var ariConnectionPool = (function() {
         var connections = {};
         var channels = {}
         var obj = {
-            setconn: function(url,username,password, app, node) {
+            setconn: function(url, username, password, app, node) {
                 var id = uuid.v4()
                 ari.connect(url, username, password, function(err, client){
                     if (err) {
@@ -46,7 +45,7 @@ module.exports = function(RED) {
         return obj;
     }());
 
-    function clientLoaded (client, app, node, id) {      
+    function clientLoaded (client, app, node, id) {
         node.status({fill:"green",shape:"dot",text:"connected"});
         function stasisStart(event, channel) {
             var dialed = event.args[0] === 'dialed';
@@ -58,7 +57,7 @@ module.exports = function(RED) {
                 msg.payload = event
                 node.send([msg, null])
             }
-            
+
         }
         function stasisEnd(event, channel){
             //console.log(event)
@@ -71,7 +70,7 @@ module.exports = function(RED) {
             node.send([null, msg])
 
         }
-        client.on('StasisStart', stasisStart); 
+        client.on('StasisStart', stasisStart);
         //client.on('StasisEnd', stasisEnd);
         client.on('ChannelDtmfReceived', dtmfEvent);
         client.start(app);
@@ -80,11 +79,12 @@ module.exports = function(RED) {
     function ari_client(n) {
         RED.nodes.createNode(this,n);
         var node = this;
+        this.name = n.name
         this.sip_user = n.sip_user
         this.sip_password = n.sip_password
         this.server = RED.nodes.getNode(n.server);
-        provision(this.server.credentials.url, this.server.credentials.username, this.server.credentials.password, this.sip_user, this.sip_password)
-        this.conn = ariConnectionPool.setconn(this.server.credentials.url, this.server.credentials.username, this.server.credentials.password, this.sip_password, node)
+        prov.provision(this.server.credentials.url, this.server.credentials.username, this.server.credentials.password, this.sip_user, this.sip_password)
+        this.conn = ariConnectionPool.setconn(this.server.credentials.url, this.server.credentials.username, this.server.credentials.password, this.name, node)
         this.on("close", function() {
             //deprovision(this.server.credentials.url, this.server.credentials.username, this.server.credentials.password, this.sip_user)
             //this.conn.close()
@@ -110,8 +110,8 @@ module.exports = function(RED) {
             node.send(msg)
             node.status({})
           });
-        });         
-          
+        });
+
         this.on("close", function() {
               // Called when the node is shutdown - eg on redeploy.
               // Allows ports to be closed, connections dropped etc.
@@ -129,9 +129,9 @@ module.exports = function(RED) {
             channel.hangup(function(err) {
                 if (err) {node.error(err);}
                 node.status({})
-            });            
+            });
         });
-    } 
+    }
     RED.nodes.registerType("ari_hangup",ari_hangup);
 
 
@@ -148,8 +148,8 @@ module.exports = function(RED) {
             node.send(msg)
             node.status({})
           });
-        });         
-          
+        });
+
         this.on("close", function() {
               // Called when the node is shutdown - eg on redeploy.
               // Allows ports to be closed, connections dropped etc.
@@ -157,7 +157,7 @@ module.exports = function(RED) {
         });
     }
     RED.nodes.registerType("ari_answer",ari_answer);
-    
+
     function ari_bridgedial(n){
         RED.nodes.createNode(this,n);
         var node = this;
@@ -207,7 +207,7 @@ module.exports = function(RED) {
             if (n.ended_event) {
                 node.send([null, msg])
             }
-            
+
             node.status({});
           });
           channel.on('ChannelDtmfReceived', function(event, channel){
@@ -240,95 +240,3 @@ module.exports = function(RED) {
     }
     RED.nodes.registerType("ari_bridgedial",ari_bridgedial);
 }
-
-function provision(url,username,password, sip_user, sip_password){
-    ari.connect(url, username, password)
-    .then(function (client){
-        client.asterisk.updateObject({
-          configClass: 'res_pjsip',
-          id: sip_user,
-          objectType: 'auth',
-          fields : [
-              { attribute: 'auth_type', value: 'userpass' },
-              { attribute: 'username', value: sip_user },
-              { attribute: 'password', value: sip_password }
-          ]
-      })
-      .then (function (configTuples){
-          //console.log(configTuples)
-          client.asterisk.updateObject({
-              configClass: 'res_pjsip',
-              id: sip_user,
-              objectType: 'aor',
-              fields : [
-                  { attribute: 'support_path', value: "yes" },
-                  { attribute: 'remove_existing', value: "yes" },
-                  { attribute: 'max_contacts', value: "1" }
-              ]
-              })
-              .then (function (configTuples){
-                  //console.log(configTuples)
-                  client.asterisk.updateObject({
-                  configClass: 'res_pjsip',
-                  id: sip_user,
-                  objectType: 'endpoint',
-                  fields : [
-                      { attribute: 'from_user', value: sip_user },
-                      { attribute: 'allow', value: "!all,g722,ulaw,alaw" },
-                      { attribute: 'ice_support', value: "yes" },
-                      { attribute: 'force_rport', value: "yes" },
-                      { attribute: 'rewrite_contact', value: "yes" },
-                      { attribute: 'rtp_symmetric', value: "yes" },
-                      { attribute: 'context', value: "applications" },
-                      { attribute: 'auth', value: sip_user },
-                      { attribute: 'aors', value: sip_user }
-                  ]
-                  })
-                  .then (function (configTuples){
-                      //console.log(configTuples)
-                  })
-              })
-          })
-    })
-    .catch(function (err) {
-        console.log(err)
-    });
-  
-  }
-  
-  function deprovision(url,username,password, sip_user){
-    ari.connect(url, username, password)
-    .then(function (client){
-        client.asterisk.deleteObject({
-          configClass: 'res_pjsip',
-          id: sip_user,
-          objectType: 'endpoint'
-      })
-      .then (function (configTuples){
-          //console.log(configTuples)
-          client.asterisk.deleteObject({
-              configClass: 'res_pjsip',
-              id: sip_user,
-              objectType: 'aor'
-              
-              })
-              .then (function (configTuples){
-                  console.log(configTuples)
-                  client.asterisk.deleteObject({
-                  configClass: 'res_pjsip',
-                  id: sip_user,
-                  objectType: 'auth'
-                  })
-                  .then (function (configTuples){
-                      console.log(configTuples)
-                  })
-              })
-          })
-    })
-    .catch(function (err) {
-        console.log(err)
-    });
-  
-  
-  }
-  
