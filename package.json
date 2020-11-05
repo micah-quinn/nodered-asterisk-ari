@@ -13,7 +13,8 @@
   "license": "MIT",
   "node-red": {
     "nodes": {
-      "ari_client": "ari_client.js",
+      "endpoint": "endpoint.js",
+      "application": "application.js",
       "auth": "auth.js"
     }
   },

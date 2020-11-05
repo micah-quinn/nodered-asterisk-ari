@@ -1,0 +1,28 @@
+<script type="text/javascript">
+    RED.nodes.registerType('application',{
+        category: 'asterisk',
+        color: '#d433ff',
+        icon: 'font-awesome/fa-asterisk',
+        defaults: {
+            name: {value:""},
+            server: {value:"", type:"asterisk_ari"},
+        },
+        outputs: 1,
+        outputLabels: ["call"],
+        label: function() {
+            return this.name||"Application";
+        },
+        palletteLabel: "Application"
+    });
+</script>
+
+<script type="text/html" data-template-name="application">
+     <div class="form-row">
+         <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+         <input type="text" id="node-input-name" placeholder="Name">
+     </div>
+     <div class="form-row">
+        <label for="node-config-input-server"></i>Asterisk Server</label>
+        <input type="text" id="node-input-server" >
+    </div>
+ </script>

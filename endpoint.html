@@ -1,7 +1,7 @@
 <script type="text/javascript">
-    RED.nodes.registerType('ari_client',{
+    RED.nodes.registerType('endpoint',{
         category: 'asterisk',
-        color: '#989898',
+        color: '#3383ff',
         icon: 'font-awesome/fa-asterisk',
         defaults: {
             name: {value:""},
@@ -18,7 +18,7 @@
     });
 </script>
 
-<script type="text/html" data-template-name="ari_client">
+<script type="text/html" data-template-name="endpoint">
      <div class="form-row">
          <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
          <input type="text" id="node-input-name" placeholder="Name">
@@ -37,21 +37,18 @@
     </div>
  </script>
 
-
  <!-- Next, some simple help text is provided for the node.                   -->
- <script type="text/html" data-help-name="ari_client">
+ <script type="text/html" data-help-name="endpoint">
     <!-- data-help-name identifies the node type this help is for             -->
     <!-- This content appears in the Info sidebar when a node is selected     -->
     <!-- The first <p> is used as the pop-up tool tip when hovering over a    -->
     <!-- node in the palette.                                                 -->
-    <p>Simple sample input node. Just sends a single message when it starts up.
-    This is not very useful.</p>
-    <p>Outputs an object called <b>msg</b> containing <b>msg.topic</b> and
-    <b>msg.payload</b>. msg.payload is a String.</p>
+    <p>An endpoint node that registers with Asterisk. No Input.</p>
+    <p>Outputs message events.</p>
  </script>
 
  <script type="text/javascript">
-    RED.nodes.registerType('ari_playback',{
+    RED.nodes.registerType('playback',{
         category: 'asterisk',
         color: '#FF9966',
         icon: 'font-awesome/fa-asterisk',
@@ -62,13 +59,13 @@
         inputs:1,
         outputs:1,
         label: function() {
-            return this.name||"ARI Playback";
+            return this.name||"Playback";
         },
-        palletteLabel: "ARI Playback"
+        palletteLabel: "Playback"
     });
 </script>
 
-<script type="text/html" data-template-name="ari_playback">
+<script type="text/html" data-template-name="playback">
      <div class="form-row">
          <label for="node-input-name"><i class="fa fa-tag"></i>Name</label>
          <input type="text" id="node-input-name" placeholder="Name">
@@ -81,7 +78,7 @@
 
 
  <!-- Next, some simple help text is provided for the node.                   -->
- <script type="text/html" data-help-name="ari_playback">
+ <script type="text/html" data-help-name="playback">
     <!-- data-help-name identifies the node type this help is for             -->
     <!-- This content appears in the Info sidebar when a node is selected     -->
     <!-- The first <p> is used as the pop-up tool tip when hovering over a    -->
@@ -95,7 +92,7 @@
 
 
  <script type="text/javascript">
-    RED.nodes.registerType('ari_hangup',{
+    RED.nodes.registerType('hangup',{
         category: 'asterisk',
         color: '#FF6633',
         icon: 'font-awesome/fa-asterisk',
@@ -104,13 +101,13 @@
         },
         inputs:1,
         label: function() {
-            return this.name||"ARI Hangup";
+            return this.name||"Hangup";
         },
-        palletteLabel: "ARI Playback"
+        palletteLabel: "Playback"
     });
 </script>
 
-<script type="text/html" data-template-name="ari_hangup">
+<script type="text/html" data-template-name="hangup">
      <div class="form-row">
          <label for="node-input-name"><i class="fa fa-tag"></i>Name</label>
          <input type="text" id="node-input-name" placeholder="Name">
@@ -120,12 +117,12 @@
 
 
  <!-- Next, some simple help text is provided for the node.                   -->
- <script type="text/html" data-help-name="ari_hangup">
+ <script type="text/html" data-help-name="hangup">
     <p> Hangup The Channel</p>
  </script>
 
  <script type="text/javascript">
-    RED.nodes.registerType('ari_answer',{
+    RED.nodes.registerType('answer',{
         category: 'asterisk',
         color: '#66ff66',
         icon: 'font-awesome/fa-asterisk',
@@ -141,7 +138,7 @@
     });
 </script>
 
-<script type="text/html" data-template-name="ari_answer">
+<script type="text/html" data-template-name="answer">
      <div class="form-row">
          <label for="node-input-name"><i class="fa fa-tag"></i>Name</label>
          <input type="text" id="node-input-name" placeholder="Name">
@@ -150,7 +147,7 @@
  </script>
 
  <script type="text/javascript">
-    RED.nodes.registerType('ari_bridgedial',{
+    RED.nodes.registerType('bridgedial',{
         category: 'asterisk',
         color: '#339933',
         icon: 'font-awesome/fa-asterisk',
@@ -173,7 +170,7 @@
     });
 </script>
 
-<script type="text/html" data-template-name="ari_bridgedial">
+<script type="text/html" data-template-name="bridgedial">
      <div class="form-row">
          <label for="node-input-name"><i class="fa fa-tag"></i>Name</label>
          <input type="text" id="node-input-name" placeholder="Name">
