@@ -2,33 +2,51 @@ var ari = require('ari-client');
 var uuid = require('uuid')
 
 function clientLoaded (client, app, node, id) {
+
    node.status({fill:"green",shape:"dot",text:"connected"});
+
+   client.on('StasisStart', stasisStart);
+   client.on('StasisEnd', stasisEnd);
+   client.on('ChannelDtmfReceived', dtmfEvent);
+
    function stasisStart(event, channel) {
-      var dialed = event.args[0] === 'dialed';
-      if (!dialed){
-         var channelid = ariConnectionPool.setchan(channel)
-         var msg = {}
-         msg.channel = channelid
-         msg.client = id
-         msg.payload = event
-         node.send([msg, null])
-      }
+      var bridge = client.Bridge();
+      bridge.create({type: 'mixing,dtmf_events'});
+
+      client.bridges.addChannel({bridgeId: bridge.id, channel: channel.id},
+         function (err) {
+            if (err) {
+               console.log(err);
+            }
+        });
+
+      var channelid = ariConnectionPool.setchan(channel)
+      var msg = {}
+      msg.channel = channelid
+      msg.client = id
+      msg.payload = event
+      node.send([msg, null])
 
    }
+
    function stasisEnd(event, channel){
+      channel.removeAllListeners('ChannelDtmfReceived')
+      var msg = {}
+      msg.channel = channel.id
+      msg.client = id
+      msg.payload = event
+      node.send([null, msg])
       //console.log(event)
    }
+
    function dtmfEvent(event, channel){
       var msg = {}
       msg.channel = channel.id
       msg.client = id
       msg.payload = event
       node.send([null, msg])
-
    }
-   client.on('StasisStart', stasisStart);
-   //client.on('StasisEnd', stasisEnd);
-   client.on('ChannelDtmfReceived', dtmfEvent);
+
    client.start(app);
 }
 
@@ -38,7 +56,6 @@ var ariConnectionPool = (function() {
    var obj = {
       setconn: function(url, username, password, app, node) {
          var id = uuid.v4()
-         console.log("here" + url + username + password + app )
          ari.connect(url, username, password, function(err, client){
             if (err) {
                node.error(err);

@@ -6,9 +6,10 @@
         defaults: {
             name: {value:""},
             server: {value:"", type:"asterisk_ari"},
+            dtmf_event : {value: false}
         },
-        outputs: 1,
-        outputLabels: ["call"],
+        outputs: 2,
+        outputLabels: ["call", "dtmf"],
         label: function() {
             return this.name||"Application";
         },
@@ -25,4 +26,103 @@
         <label for="node-config-input-server"></i>Asterisk Server</label>
         <input type="text" id="node-input-server" >
     </div>
+</script>
+
+ <script type="text/javascript">
+    RED.nodes.registerType('playback',{
+       category: 'asterisk',
+       color: '#FF9966',
+       icon: 'font-awesome/fa-asterisk',
+       defaults: {
+            name: {value:""},
+            media: {value:""}
+       },
+       inputs:1,
+       outputs:1,
+       label: function() {
+            return this.name||"Playback";
+       },
+       palletteLabel: "Playback"
+    });
+ </script>
+
+ <script type="text/html" data-template-name="playback">
+     <div class="form-row">
+         <label for="node-input-name"><i class="fa fa-tag"></i>Name</label>
+         <input type="text" id="node-input-name" placeholder="Name">
+     </div>
+    <div class="form-row">
+       <label for="node-input-media"><i class="fa fa-tag"></i>Media</label>
+       <input type="text" id="node-input-media" placeholder="sound:weasels-eaten-phonesys">
+    </div>
+ </script>
+
+
+ <!-- Next, some simple help text is provided for the node.                   -->
+ <script type="text/html" data-help-name="playback">
+    <!-- data-help-name identifies the node type this help is for             -->
+    <!-- This content appears in the Info sidebar when a node is selected     -->
+    <!-- The first <p> is used as the pop-up tool tip when hovering over a    -->
+    <!-- node in the palette.                                                 -->
+    <p>Simple sample input node. Just sends a single message when it starts up.
+    This is not very useful.</p>
+    <p>Outputs an object called <b>msg</b> containing <b>msg.topic</b> and
+    <b>msg.payload</b>. msg.payload is a String.</p>
+ </script>
+
+
+
+ <script type="text/javascript">
+    RED.nodes.registerType('hangup',{
+       category: 'asterisk',
+       color: '#FF6633',
+       icon: 'font-awesome/fa-asterisk',
+       defaults: {
+            name: {value:""}
+       },
+       inputs:1,
+       label: function() {
+            return this.name||"Hangup";
+       },
+       palletteLabel: "Playback"
+    });
+ </script>
+
+ <script type="text/html" data-template-name="hangup">
+     <div class="form-row">
+         <label for="node-input-name"><i class="fa fa-tag"></i>Name</label>
+         <input type="text" id="node-input-name" placeholder="Name">
+     </div>
+
+ </script>
+
+
+ <!-- Next, some simple help text is provided for the node.                   -->
+ <script type="text/html" data-help-name="hangup">
+    <p> Hangup The Channel</p>
+ </script>
+
+ <script type="text/javascript">
+    RED.nodes.registerType('answer',{
+       category: 'asterisk',
+       color: '#66ff66',
+       icon: 'font-awesome/fa-asterisk',
+       defaults: {
+            name: {value:""}
+       },
+       inputs:1,
+       outputs: 1,
+       label: function() {
+            return this.name||"Answer";
+       },
+       palletteLabel: "Answer"
+    });
+ </script>
+
+ <script type="text/html" data-template-name="answer">
+     <div class="form-row">
+         <label for="node-input-name"><i class="fa fa-tag"></i>Name</label>
+         <input type="text" id="node-input-name" placeholder="Name">
+     </div>
+
  </script>
